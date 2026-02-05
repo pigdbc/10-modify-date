@@ -10,7 +10,7 @@ function Read-ConfigFromBat {
 
     $config = @{}
     if (-not (Test-Path $BatPath)) {
-        throw "è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“: $BatPath"
+        throw "İ’èƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: $BatPath"
     }
 
     $lines = Get-Content -Path $BatPath -Encoding Default
@@ -61,11 +61,11 @@ $class2Prefix = $config["CLASS2_PREFIX"]
 $class2Field = $config["CLASS2_FIELD"]
 
 if (-not $class1Prefix -or -not $class1Field -or -not $class2Prefix -or -not $class2Field) {
-    throw "SetEnv.bat ã®è¨­å®šãŒä¸è¶³ã—ã¦ã„ã¾ã™ã€‚"
+    throw "SetEnv.bat ‚Ìİ’è‚ª•s‘«‚µ‚Ä‚¢‚Ü‚·B"
 }
 
 if (-not (Test-Path $inputDir)) {
-    throw "input ãƒ•ã‚©ãƒ«ãƒ€ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“: $inputDir"
+    throw "input ƒtƒHƒ‹ƒ_‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: $inputDir"
 }
 if (-not (Test-Path $outDir)) {
     New-Item -ItemType Directory -Path $outDir | Out-Null
@@ -74,33 +74,33 @@ if (-not (Test-Path $outDir)) {
 if (-not $Paths -or $Paths.Count -eq 0) {
     $files = Get-ChildItem -Path $inputDir -Filter "*.csv" | Select-Object -ExpandProperty FullName
     if (-not $files -or $files.Count -eq 0) {
-        Write-Host "input ã«CSVãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚Šã¾ã›ã‚“ã€‚"
+        Write-Host "input ‚ÉCSVƒtƒ@ƒCƒ‹‚ª‚ ‚è‚Ü‚¹‚ñB"
         exit 1
     }
 
     if (-not (Get-Command Out-GridView -ErrorAction SilentlyContinue)) {
-        Write-Host "Out-GridView ãŒåˆ©ç”¨ã§ãã¾ã›ã‚“ã€‚-Paths ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã§å®Ÿè¡Œã—ã¦ãã ã•ã„ã€‚"
+        Write-Host "Out-GridView ‚ª—˜—p‚Å‚«‚Ü‚¹‚ñB-Paths ƒIƒvƒVƒ‡ƒ“‚ÅÀs‚µ‚Ä‚­‚¾‚³‚¢B"
         exit 1
     }
 
-    $Paths = $files | Out-GridView -Title "CSVãƒ•ã‚¡ã‚¤ãƒ«ã‚’é¸æŠã—ã¦ãã ã•ã„ï¼ˆè¤‡æ•°é¸æŠå¯ï¼‰" -PassThru
+    $Paths = $files | Out-GridView -Title "CSVƒtƒ@ƒCƒ‹‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢i•¡”‘I‘ğ‰Âj" -PassThru
     if (-not $Paths -or $Paths.Count -eq 0) {
-        Write-Host "ãƒ•ã‚¡ã‚¤ãƒ«ãŒé¸æŠã•ã‚Œã¾ã›ã‚“ã§ã—ãŸã€‚"
+        Write-Host "ƒtƒ@ƒCƒ‹‚ª‘I‘ğ‚³‚ê‚Ü‚¹‚ñ‚Å‚µ‚½B"
         exit 1
     }
 }
 
 while (-not $Date -or -not (Validate-Date -Value $Date)) {
-    $Date = Read-Host "æ—¥ä»˜(yyyymmdd)ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„"
+    $Date = Read-Host "“ú•t(yyyymmdd)‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢"
     if (-not (Validate-Date -Value $Date)) {
-        Write-Host "æ—¥ä»˜ã®å½¢å¼ãŒæ­£ã—ãã‚ã‚Šã¾ã›ã‚“ã€‚ä¾‹: 20260205"
+        Write-Host "“ú•t‚ÌŒ`®‚ª³‚µ‚­‚ ‚è‚Ü‚¹‚ñB—á: 20260205"
         $Date = $null
     }
 }
 
 foreach ($path in $Paths) {
     if (-not (Test-Path $path)) {
-        Write-Host "ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“: $path"
+        Write-Host "ƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: $path"
         continue
     }
 
@@ -112,7 +112,7 @@ foreach ($path in $Paths) {
     } elseif ($fileName.StartsWith($class2Prefix)) {
         $targetField = $class2Field
     } else {
-        Write-Host "å¯¾è±¡å¤–ã®ãƒ•ã‚¡ã‚¤ãƒ«ã§ã™: $fileName"
+        Write-Host "‘ÎÛŠO‚Ìƒtƒ@ƒCƒ‹‚Å‚·: $fileName"
         continue
     }
 
@@ -125,7 +125,7 @@ foreach ($path in $Paths) {
         $headerLine = $inStream.ReadLine()
         $headers = Read-Header -Line $headerLine
         if (-not ($headers -contains $targetField)) {
-            Write-Host "å¯¾è±¡åˆ—ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“: $fileName ($targetField)"
+            Write-Host "‘ÎÛ—ñ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: $fileName ($targetField)"
             continue
         }
 
@@ -157,14 +157,14 @@ foreach ($path in $Paths) {
     $durationSeconds = [Math]::Max(1, [int][Math]::Ceiling($duration.TotalSeconds))
     $durationText = [TimeSpan]::FromSeconds($durationSeconds).ToString("hh\:mm\:ss")
     $logLines = @(
-        ("é–‹å§‹æ™‚åˆ»   : {0:yyyy-MM-dd HH:mm:ss}" -f $startTime),
-        ("çµ‚äº†æ™‚åˆ»   : {0:yyyy-MM-dd HH:mm:ss}" -f $endTime),
-        ("æ‰€è¦æ™‚é–“   : {0}" -f $durationText),
-        ("æ›´æ–°ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ : {0}" -f $targetField),
-        ("æ›´æ–°å¾Œã®æ—¥ä»˜   : {0}" -f $Date),
-        ("å‡¦ç†ä»¶æ•°       : {0}" -f $rowCount)
+        ("ŠJn   : {0:yyyy-MM-dd HH:mm:ss}" -f $startTime),
+        ("I—¹   : {0:yyyy-MM-dd HH:mm:ss}" -f $endTime),
+        ("Š—vŠÔ   : {0}" -f $durationText),
+        ("XVƒtƒB[ƒ‹ƒh : {0}" -f $targetField),
+        ("XVŒã‚Ì“ú•t   : {0}" -f $Date),
+        ("ˆ—Œ”       : {0}" -f $rowCount)
     )
     Set-Content -Path $logPath -Value $logLines -Encoding Unicode
 
-    Write-Host "å‡¦ç†å®Œäº†: $fileName"
+    Write-Host "ˆ—Š®—¹: $fileName"
 }

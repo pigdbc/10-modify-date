@@ -1,5 +1,5 @@
 @echo off
-set CLASS1_PREFIX=ãƒ†ãƒ¼ãƒ™
+set CLASS1_PREFIX=ƒe[ƒx
 set CLASS1_FIELD=a
-set CLASS2_PREFIX=ãƒ†ã“
+set CLASS2_PREFIX=ƒe‚±
 set CLASS2_FIELD=b
