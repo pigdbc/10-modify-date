@@ -1,0 +1,5 @@
+@echo off
+set CLASS1_PREFIX=テーベ
+set CLASS1_FIELD=a
+set CLASS2_PREFIX=テこ
+set CLASS2_FIELD=b
