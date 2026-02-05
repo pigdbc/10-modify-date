@@ -34,6 +34,15 @@ set CLASS2_PREFIX=テこ
 set CLASS2_FIELD=b
 ```
 
+## SJIS 版本（仅日语系统 + PS5.1）
+- 脚本：`Modify-Date-sjis.ps1`
+- 配置：`SetEnv-sjis.bat`
+- 说明：这两份文件均为 **SJIS/CP932** 编码，只适用于日语系统的 Windows PowerShell 5.1  
+- 运行：  
+```powershell
+powershell .\10-修改日期\Modify-Date-sjis.ps1
+```
+
 ## 行为与情况表
 
 | 情况 | 行为 | 提示/结果 |
