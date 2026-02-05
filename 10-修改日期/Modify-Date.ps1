@@ -27,11 +27,10 @@ function Read-ConfigFromBat {
 }
 
 function Read-Header {
-    param([string]$CsvPath)
-    $firstLine = Get-Content -Path $CsvPath -Encoding Unicode -TotalCount 1
-    if (-not $firstLine) { return @() }
-    $firstLine = $firstLine.TrimStart([char]0xFEFF)
-    return ($firstLine -split ',') | ForEach-Object { $_.Trim('\"') }
+    param([string]$Line)
+    if (-not $Line) { return @() }
+    $line = $Line.TrimStart([char]0xFEFF)
+    return ($line -split ',') | ForEach-Object { $_.Trim('\"') }
 }
 
 function Validate-Date {
@@ -117,23 +116,55 @@ foreach ($path in $Paths) {
         continue
     }
 
-    $headers = Read-Header -CsvPath $path
-    if (-not ($headers -contains $targetField)) {
-        Write-Host "対象列が見つかりません: $fileName ($targetField)"
-        continue
-    }
-
-    $rows = Import-Csv -Path $path -Encoding Unicode
-    foreach ($row in $rows) {
-        $row.$targetField = $Date
-    }
-
+    $startTime = Get-Date
+    $inStream = New-Object System.IO.StreamReader($path, [System.Text.Encoding]::Unicode)
     $outPath = Join-Path $outDir $fileName
-    $rows | Export-Csv -Path $outPath -NoTypeInformation -Encoding Unicode
+    $outStream = New-Object System.IO.StreamWriter($outPath, $false, [System.Text.Encoding]::Unicode)
 
-    $logPath = Join-Path $outDir ("{0}.log" -f $fileName)
-    $logMessage = "フィールド {0} は {1} に変更しました。" -f $targetField, $Date
-    Set-Content -Path $logPath -Value $logMessage -Encoding Unicode
+    try {
+        $headerLine = $inStream.ReadLine()
+        $headers = Read-Header -Line $headerLine
+        if (-not ($headers -contains $targetField)) {
+            Write-Host "対象列が見つかりません: $fileName ($targetField)"
+            continue
+        }
+
+        $targetIndex = [Array]::IndexOf($headers, $targetField)
+        $outStream.WriteLine($headerLine)
+
+        $rowCount = 0
+        while (-not $inStream.EndOfStream) {
+            $line = $inStream.ReadLine()
+            if ($null -eq $line) { break }
+            if ($line.Length -eq 0) { $outStream.WriteLine($line); continue }
+
+            $cols = $line -split ','
+            if ($targetIndex -lt $cols.Count) {
+                $cols[$targetIndex] = '"' + $Date + '"'
+            }
+            $outStream.WriteLine(($cols -join ','))
+            $rowCount++
+        }
+    } finally {
+        $inStream.Close()
+        $outStream.Close()
+    }
+    $endTime = Get-Date
+    $duration = $endTime - $startTime
+
+    $baseName = [System.IO.Path]::GetFileNameWithoutExtension($fileName)
+    $logPath = Join-Path $outDir ("{0}.log" -f $baseName)
+    $durationSeconds = [Math]::Max(1, [int][Math]::Ceiling($duration.TotalSeconds))
+    $durationText = [TimeSpan]::FromSeconds($durationSeconds).ToString("hh\:mm\:ss")
+    $logLines = @(
+        ("開始時刻   : {0:yyyy-MM-dd HH:mm:ss}" -f $startTime),
+        ("終了時刻   : {0:yyyy-MM-dd HH:mm:ss}" -f $endTime),
+        ("所要時間   : {0}" -f $durationText),
+        ("更新フィールド : {0}" -f $targetField),
+        ("更新後の日付   : {0}" -f $Date),
+        ("処理件数       : {0}" -f $rowCount)
+    )
+    Set-Content -Path $logPath -Value $logLines -Encoding Unicode
 
     Write-Host "処理完了: $fileName"
 }
