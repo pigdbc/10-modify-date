@@ -118,8 +118,8 @@ foreach ($path in $Paths) {
 
     $startTime = Get-Date
     $inStream = New-Object System.IO.StreamReader($path, [System.Text.Encoding]::Unicode)
-    $outPath = Join-Path $outDir $fileName
-    $outStream = New-Object System.IO.StreamWriter($outPath, $false, [System.Text.Encoding]::Unicode)
+    $outStream = $null
+    $outPath = $null
 
     try {
         $headerLine = $inStream.ReadLine()
@@ -130,6 +130,8 @@ foreach ($path in $Paths) {
         }
 
         $targetIndex = [Array]::IndexOf($headers, $targetField)
+        $outPath = Join-Path $outDir $fileName
+        $outStream = New-Object System.IO.StreamWriter($outPath, $false, [System.Text.Encoding]::Unicode)
         $outStream.WriteLine($headerLine)
 
         $rowCount = 0
@@ -147,7 +149,7 @@ foreach ($path in $Paths) {
         }
     } finally {
         $inStream.Close()
-        $outStream.Close()
+        if ($outStream) { $outStream.Close() }
     }
     $endTime = Get-Date
     $duration = $endTime - $startTime
