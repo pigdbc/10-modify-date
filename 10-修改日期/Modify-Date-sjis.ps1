@@ -121,19 +121,19 @@ foreach ($path in $Paths) {
     $outStream = $null
     $outPath = $null
 
+    $headerLine = $inStream.ReadLine()
+    $headers = Read-Header -Line $headerLine
+    if (-not ($headers -contains $targetField)) {
+        Write-Host "‘ÎÛ—ñ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: $fileName ($targetField)"
+        $inStream.Close()
+        continue
+    }
+
+    $targetIndex = [Array]::IndexOf($headers, $targetField)
+    $outPath = Join-Path $outDir $fileName
+    $outStream = New-Object System.IO.StreamWriter($outPath, $false, [System.Text.Encoding]::Unicode)
     try {
-        $headerLine = $inStream.ReadLine()
-        $headers = Read-Header -Line $headerLine
-        if (-not ($headers -contains $targetField)) {
-            Write-Host "‘ÎÛ—ñ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: $fileName ($targetField)"
-            continue
-        }
-
-        $targetIndex = [Array]::IndexOf($headers, $targetField)
-        $outPath = Join-Path $outDir $fileName
-        $outStream = New-Object System.IO.StreamWriter($outPath, $false, [System.Text.Encoding]::Unicode)
         $outStream.WriteLine($headerLine)
-
         $rowCount = 0
         while (-not $inStream.EndOfStream) {
             $line = $inStream.ReadLine()
