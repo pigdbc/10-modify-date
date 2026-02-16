@@ -1,0 +1,23 @@
+LOAD DATA
+CHARACTERSET AL32UTF8
+INFILE 'out/d_load.csv'
+BADFILE 'out/d_load.bad'
+DISCARDFILE 'out/d_load.dsc'
+APPEND
+INTO TABLE d
+FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' TRAILING NULLCOLS
+(
+  d_key1 CHAR(200),
+  d_key2 CHAR(200),
+  d_key3 CHAR(200),
+  d_key4 DECIMAL EXTERNAL,
+  d_key5 DECIMAL EXTERNAL,
+  d_key6 DECIMAL EXTERNAL,
+  b_match_flg DECIMAL EXTERNAL,
+  c_match_flg DECIMAL EXTERNAL,
+  a_value CHAR(4000),
+  b_value CHAR(4000),
+  c_value CHAR(4000),
+  created_at TIMESTAMP "YYYY-MM-DD HH24:MI:SS",
+  updated_at TIMESTAMP "YYYY-MM-DD HH24:MI:SS"
+)
